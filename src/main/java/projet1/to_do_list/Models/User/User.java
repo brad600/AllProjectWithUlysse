@@ -1,76 +1,64 @@
 package projet1.to_do_list.Models.User;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import projet1.to_do_list.Models.Taches.Taches;
 
-import java.util.Date;
-import java.util.List;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Table(name = "UserTable")
 @Entity
-public class User {
+public class User implements Serializable {
+    @Getter
+    @Setter
     @Id
-    @Column(name = "UserMatricule")
-    private UUID matricule;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+
+    @Setter
+    @Getter
+    @Column(name = "userMatricule", unique = true)
+    private UUID userMatricule = UUID.randomUUID();
+
+
+    @Setter
+    @Getter
     @Column(name = "UserNom")
     private String nom;
+
+
+    @Setter
+    @Getter
     @Column(name = "UserPrenom")
     private String prenom;
+
+
+    @Getter
+    @Setter
     @Column(name = "UserAge")
     private int age;
-    @Column(name = "date_echeance")
-    @Temporal(TemporalType.DATE)
-    private Date echeance;
-    @OneToMany(mappedBy = "user")
-    private List<Taches> listTaches;
+
+
+    @Getter
+    @Setter
+    @OneToMany(mappedBy = "associatedUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Taches> listTaches=new HashSet<>();
 
     public User() {
-        this.matricule = UUID.randomUUID();
     }
 
-    public User(UUID matricule, String nom, String prenom, int age, Date echeance) {
-        this.matricule = matricule;
+    public User(int id, UUID userMatricule, String nom, String prenom, int age) {
+        this.id = id;
+        this.userMatricule = userMatricule;
         this.nom = nom;
         this.prenom = prenom;
         this.age = age;
-        this.echeance = echeance;
     }
 
-    public UUID getMatricule() {
-        return matricule;
-    }
-
-
-    public String getNom() {
-        return nom;
-    }
-
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
-    public String getPrenom() {
-        return prenom;
-    }
-
-    public void setPrenom(String prenom) {
-        this.prenom = prenom;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public Date getEcheance() {
-        return echeance;
-    }
-
-    public void setEcheance(Date echeance) {
-        this.echeance = echeance;
-    }
 }
